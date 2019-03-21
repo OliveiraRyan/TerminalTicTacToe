@@ -10,14 +10,8 @@ _max_msg_size = 256
 
 player = '1'
 moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
-playerLetter = {
-    '1': 'X',
-    '2': 'O'
-}
-swapPlayer = {
-    '1': '2',
-    '2': '1'
-}
+playerLetter = ' '
+
 
 def send_message(sock, msg):
     '''Send str msg to the socket sock. A socket.error is raised if the socket 
@@ -92,7 +86,7 @@ def playerTurn():
             return
 
         else:
-            moves[row][col] = playerLetter[player]
+            moves[row][col] = playerLetter
             #drawBoard()
     playerMove()
 
@@ -103,7 +97,7 @@ def validMove(inputValue):
         return False
         
 def play():
-    global moves, player
+    global moves, player, playerLetter
     moveCounter = 0 #for use later, when implementing reset feature
 
     #most of this is done in server
@@ -130,6 +124,13 @@ def play():
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     connection.connect(("DESKTOP-V2I4740", _port))
 
+    #indication from server if this client goes first or second
+    msg = connection.recv(_max_msg_size).decode("UTF-8")
+    if (msg == '1'):
+        playerLetter = 'X'
+    else:
+        playerLetter = 'O'
+
     while True:
         
         msg = connection.recv(_max_msg_size).decode("UTF-8")
@@ -143,6 +144,7 @@ def play():
             print("send moves")
         elif (msg == "Waiting for opponent..."):
             moves = pickle.loads(connection.recv(_max_msg_size))
+            
 
         
 

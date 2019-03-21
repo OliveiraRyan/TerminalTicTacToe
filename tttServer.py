@@ -86,6 +86,11 @@ def winCondition():
 
 
 print('Game starting...')
+
+#send initial message telling the clients who goes first
+send_message(conn1, str(p1Turn))
+send_message(conn2, str(p2Turn))
+
 while turn < 9 and winner == None:
     turn += 1
 
