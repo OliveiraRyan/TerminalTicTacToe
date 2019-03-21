@@ -6,6 +6,8 @@ import os
 import random
 import time
 
+_max_msg_size = 256
+
 parser = argparse.ArgumentParser()
 parser.add_argument('port', type=int, help='The port to listen on')
 # parser.add_argument('--verbose', help='Should display the game turn by turn', action='store_true')
@@ -38,6 +40,37 @@ p2Turn = not p1Turn
 #determine win condition here - valid moves can be done but its better client side since they resume their turn
 #everything else should be client I guess
 
+def send_message(sock, msg):
+    '''Send bytes msg to each socket in the dict sockets and return a list of sockets
+    which have died.'''
+
+    msg = bytes(msg, encoding="UTF-8")
+    to_remove = []
+    total_sent = 0
+    try:
+        while total_sent < len(msg):
+            sent = sock.send(msg[total_sent: total_sent + _max_msg_size])
+            total_sent += sent
+    except socket.error:
+        print("Error occured, message not sent")
+        return
+    #     to_remove.append(sock)
+    # return to_remove
+
 print('Game starting...')
 while turn < 9 and winner == None:
     turn += 1
+
+    #send message (game state) to BOTH players
+
+    if (p1Turn):
+        #wait for p1 move
+        continue
+    elif (p2Turn):
+        #wait for p2 move
+        continue
+
+    #swap turns
+    p1Turn = not p1Turn
+    p2Turn = not p2Turn
+
