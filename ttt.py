@@ -1,7 +1,15 @@
 import os
 
-player = 1
+player = '1'
 moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
+playerLetter = {
+    '1': 'X',
+    '2': 'O'
+}
+swapPlayer = {
+    '1': '2',
+    '2': '1'
+}
 
 def blankRow():
     for col in range(17):
@@ -43,37 +51,65 @@ def drawBoard():
         elif (row%3 == 2):
             #draw horizontal line
             lineRow()
-    
+    print()
 
 
-def player1():
-    pass
+def playerTurn():
+    global player
+    print("Player %s\'s Turn:\n" % player)
 
-def player2():
-    pass
+    def playerMove():
+        row, col = int(input('Row :'))-1, int(input('Column :'))-1
+        if (not validMove(row) or not validMove(col) or moves[row][col] != ' '):
+            print('Invalid Input! Please Try Again!')
+            playerMove()
+
+        else:
+            moves[row][col] = playerLetter[player]
+            drawBoard()
+    playerMove()
 
 def validMove(inputValue):
-    return (inputValue > 2 or inputValue < 0)
+    return not (inputValue > 2 or inputValue < 0)
 
 def winCondition():
     for letter in ['X', 'O']:
         for i in range(3):
             #check rows for win
             if (moves[i][0] == moves[i][1] == moves[i][2] == letter):
-                return letter
+                return True
             #check cols for win
             elif (moves[0][i] == moves[1][i] == moves[2][i] == letter):
-                return letter
+                return True
         #check diagonals for win
         if (moves[0][0] == moves[1][1] == moves[2][2] == letter):
-            return letter
+            return True
         elif (moves[0][2] == moves[1][1] == moves[2][0] == letter):
-            return letter
+            return True
+    return False
         
 
 
 def play():
-    pass
+    global moves, player
+    moveCounter = 0
+
+    while moveCounter < 9:
+        moveCounter += 1
+        playerTurn()
+        if (winCondition()):
+            print('Player %s has won!' % player)
+            break
+        player = swapPlayer[player]
+        
+
+    if (moveCounter == 9):
+        print('It\'s a tie!')
+    print('Play Again?')
+    if (input("Press '1' for YES and any other key to EXIT!")=='1'):
+        moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
+        drawBoard()
+        play()
 
 def start():
 	drawBoard()
