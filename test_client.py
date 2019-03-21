@@ -23,6 +23,12 @@ if __name__ == "__main__":
     connection.connect(("DESKTOP-V2I4740", _port))
 
     # TODO: complete this part.
+    while True:
+        msg = connection.recv(_max_msg_size).decode("UTF-8")
+        if len(msg) == 0:
+            print("error?")
+            break
+        print("FROM BROADCASTER: {}".format(msg))
 
     print("Connection terminated.")
     connection.close()

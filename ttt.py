@@ -63,10 +63,17 @@ def playerTurn():
     print("Player %s\'s Turn:\n" % player)
 
     def playerMove():
-        row, col = int(input('Row :'))-1, int(input('Column :'))-1
+        try:
+            row, col = int(input('Row :'))-1, int(input('Column :'))-1
+        except:
+            print('Invalid Input! Please Try Again!')
+            playerMove()
+            return
+
         if (not validMove(row) or not validMove(col) or moves[row][col] != ' '):
             print('Invalid Input! Please Try Again!')
             playerMove()
+            return
 
         else:
             moves[row][col] = playerLetter[player]
@@ -75,7 +82,10 @@ def playerTurn():
 
 
 def validMove(inputValue):
-    return not (inputValue > 2 or inputValue < 0)
+    try:
+        return inputValue < 3 and inputValue >= 0
+    except:
+        return False
 
 
 def winCondition():

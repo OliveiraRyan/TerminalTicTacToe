@@ -1,4 +1,12 @@
 import os
+import sys
+import socket
+import select
+import pickle
+import time
+
+_port = 5001
+_max_msg_size = 256
 
 player = '1'
 moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
@@ -10,6 +18,18 @@ swapPlayer = {
     '1': '2',
     '2': '1'
 }
+
+def send_message(sock, msg):
+    '''Send str msg to the socket sock. A socket.error is raised if the socket 
+    cannot accept input.'''
+
+    # msg = bytes(msg, encoding="UTF-8")
+    msg = pickle.dumps(msg)
+    # total_sent = 0
+    # while total_sent < len(msg):
+    #     sent = sock.send(msg[total_sent: total_sent + _max_msg_size])
+    #     total_sent += sent
+    sock.sendall(msg)
 
 def blankRow():
     for col in range(17):
@@ -59,57 +79,75 @@ def playerTurn():
     print("Player %s\'s Turn:\n" % player)
 
     def playerMove():
-        row, col = int(input('Row :'))-1, int(input('Column :'))-1
+        try:
+            row, col = int(input('Row :'))-1, int(input('Column :'))-1
+        except:
+            print('Invalid Input! Please Try Again!')
+            playerMove()
+            return
+        
         if (not validMove(row) or not validMove(col) or moves[row][col] != ' '):
             print('Invalid Input! Please Try Again!')
             playerMove()
+            return
 
         else:
             moves[row][col] = playerLetter[player]
-            drawBoard()
+            #drawBoard()
     playerMove()
 
 def validMove(inputValue):
-    return not (inputValue > 2 or inputValue < 0)
-
-def winCondition():
-    for letter in ['X', 'O']:
-        for i in range(3):
-            #check rows for win
-            if (moves[i][0] == moves[i][1] == moves[i][2] == letter):
-                return True
-            #check cols for win
-            elif (moves[0][i] == moves[1][i] == moves[2][i] == letter):
-                return True
-        #check diagonals for win
-        if (moves[0][0] == moves[1][1] == moves[2][2] == letter):
-            return True
-        elif (moves[0][2] == moves[1][1] == moves[2][0] == letter):
-            return True
-    return False
+    try:
+        return inputValue < 3 and inputValue >= 0
+    except:
+        return False
         
-
-
 def play():
     global moves, player
-    moveCounter = 0
+    moveCounter = 0 #for use later, when implementing reset feature
 
-    while moveCounter < 9:
-        moveCounter += 1
-        playerTurn()
-        if (winCondition()):
-            print('Player %s has won!' % player)
-            break
-        player = swapPlayer[player]
+    #most of this is done in server
+
+    # while moveCounter < 9:
+    #     moveCounter += 1
+    #     playerTurn()
+    #     if (winCondition()):
+    #         print('Player %s has won!' % player)
+    #         break
+    #     player = swapPlayer[player]
         
 
-    if (moveCounter == 9):
-        print('It\'s a tie!')
-    print('Play Again?')
-    if (input("Press '1' for YES and any other key to EXIT!")=='1'):
-        moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
-        drawBoard()
-        play()
+    # if (moveCounter == 9):
+    #     print('It\'s a tie!')
+    # print('Play Again?')
+    # if (input("Press '1' for YES and any other key to EXIT!")=='1'):
+    #     moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
+    #     drawBoard()
+    #     play()
+
+    #can change True to < 9 later -- when implementing restart game feature
+    connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    connection.connect(("DESKTOP-V2I4740", _port))
+
+    while True:
+        
+        msg = connection.recv(_max_msg_size).decode("UTF-8")
+        if len(msg) == 0:
+            break
+        print("FROM SERVER: {}".format(msg))
+        if (msg == "Your move!"):
+            drawBoard()
+            playerTurn()
+            send_message(connection, moves)
+            print("send moves")
+        elif (msg == "Waiting for opponent..."):
+            moves = pickle.loads(connection.recv(_max_msg_size))
+
+        
+
+    print("Connection terminated.")
+    connection.close()
 
 def start():
 	drawBoard()
