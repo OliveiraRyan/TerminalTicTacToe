@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 sock = socket.socket()
 host = socket.gethostname()
-sock.bind((host, args.port))
+sock.bind(('', args.port))
 
 sock.listen(2)
 
@@ -90,10 +90,11 @@ print('\nGame starting...', flush=True)
  
 #send initial message telling the clients who goes first
 send_message(conn1, str(p1Turn))
-send_message(conn1, '1')
 send_message(conn2, str(p2Turn))
+time.sleep(1)
+send_message(conn1, '1')
 send_message(conn2, '2')
-
+time.sleep(1)
 while turn < 9 and winner == None:
     turn += 1
 

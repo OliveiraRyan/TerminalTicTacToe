@@ -122,17 +122,20 @@ def play():
     #can change True to < 9 later -- when implementing restart game feature
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    connection.connect(("DESKTOP-V2I4740", _port))
+    connection.connect(("dh2026pc08", _port))
 
     #indication from server if this client goes first or second
     msg = connection.recv(_max_msg_size).decode("UTF-8")
+    print("msg: {0}".format(msg), flush=True)
     
     if (msg == 'True'):
         playerLetter = 'X'
         playerNumber = connection.recv(_max_msg_size).decode("UTF-8")
+        print("msg: {0}".format(msg), flush=True)
     else:
         playerLetter = 'O'
         playerNumber = connection.recv(_max_msg_size).decode("UTF-8")
+        print("msg: {0}".format(msg), flush=True)
 
     while True:
         drawBoard()
