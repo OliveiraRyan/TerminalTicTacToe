@@ -126,7 +126,6 @@ def play():
 
     #indication from server if this client goes first or second
     msg = connection.recv(_max_msg_size).decode("UTF-8")
-    print("msg: {0}".format(msg), flush=True)
     
     if (msg == 'True'):
         playerLetter = 'X'
