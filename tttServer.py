@@ -5,6 +5,7 @@ import socket
 import os
 import random
 import pickle
+import time
 
 _max_msg_size = 256
 
@@ -12,7 +13,6 @@ moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('port', type=int, help='The port to listen on')
-# parser.add_argument('--verbose', help='Should display the game turn by turn', action='store_true')
 args = parser.parse_args()
 
 sock = socket.socket()
@@ -24,17 +24,17 @@ sock.listen(2)
 print("Port: %d" % args.port)
 print("Host: %s" % host)
 
-print('Waiting for client 1...')
+print('Waiting for client 1...', flush=True)
 conn1, addr1 = sock.accept()
 
-
-print('Waiting for client 2...')
+print('Waiting for client 2...', flush=True)
 conn2, addr2 = sock.accept()
 
 turn = 0
 winner = None
 
-p1Turn = random.randint(0,1)
+#value is True when it is the player's turn
+p1Turn =  0 == random.randint(0,1)
 p2Turn = not p1Turn
 
 #implement logic for distributing player 1 and player 2 turns
@@ -85,20 +85,26 @@ def winCondition():
     return False
 
 
-print('Game starting...')
+print('\nGame starting...', flush=True)
 
+ 
 #send initial message telling the clients who goes first
 send_message(conn1, str(p1Turn))
+send_message(conn1, '1')
 send_message(conn2, str(p2Turn))
+send_message(conn2, '2')
 
 while turn < 9 and winner == None:
     turn += 1
 
     #send message (game state) to BOTH players
 
+    print(p1Turn, flush=True)
+    print(p2Turn, flush=True)
+
     if (p1Turn):
         playerTurn = 1
-
+        # print("we in bois", flush=True)
         #wait for p1 move
         send_message(conn1, "Your move!")
         send_message(conn2, "Waiting for opponent...")
@@ -110,7 +116,7 @@ while turn < 9 and winner == None:
         
     elif (p2Turn):
         playerTurn = 2
-
+        # print("we in bois 2", flush=True)
         #wait for p2 move
         send_message(conn1, "Waiting for opponent...")
         send_message(conn2, "Your move!")
@@ -120,11 +126,14 @@ while turn < 9 and winner == None:
 
         send_moves(conn1, moves)
 
-    print(moves)
+    print(moves, flush=True)
     
     
     if (winCondition()):
-        print('Player %d has won!' % playerTurn)
+        winner = 'Player %d has won!' % playerTurn
+        # send_message(conn1, winner)
+        # send_message(conn2, winner)
+        print(winner, flush=True)
         #server should terminate at this point -- can do reset game feature later
         break
 

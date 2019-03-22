@@ -8,8 +8,8 @@ import time
 _port = 5001
 _max_msg_size = 256
 
-player = '1'
 moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
+playerNumber = '0'
 playerLetter = ' '
 
 
@@ -69,8 +69,8 @@ def drawBoard():
 
 
 def playerTurn():
-    global player
-    print("Player %s\'s Turn:\n" % player)
+    global playerNumber, playerLetter
+    print("Player {0}\'s Turn,\nYour letter is {1}:\n".format(playerNumber, playerLetter))
 
     def playerMove():
         try:
@@ -97,7 +97,7 @@ def validMove(inputValue):
         return False
         
 def play():
-    global moves, player, playerLetter
+    global moves, playerNumber, playerLetter
     moveCounter = 0 #for use later, when implementing reset feature
 
     #most of this is done in server
@@ -126,27 +126,26 @@ def play():
 
     #indication from server if this client goes first or second
     msg = connection.recv(_max_msg_size).decode("UTF-8")
-    if (msg == '1'):
+    
+    if (msg == 'True'):
         playerLetter = 'X'
+        playerNumber = connection.recv(_max_msg_size).decode("UTF-8")
     else:
         playerLetter = 'O'
+        playerNumber = connection.recv(_max_msg_size).decode("UTF-8")
 
     while True:
-        
+        drawBoard()
         msg = connection.recv(_max_msg_size).decode("UTF-8")
         if len(msg) == 0:
             break
-        print("FROM SERVER: {}".format(msg))
+        print("FROM SERVER: {}".format(msg), flush=True)
         if (msg == "Your move!"):
-            drawBoard()
             playerTurn()
             send_message(connection, moves)
-            print("send moves")
         elif (msg == "Waiting for opponent..."):
             moves = pickle.loads(connection.recv(_max_msg_size))
             
-
-        
 
     print("Connection terminated.")
     connection.close()
@@ -154,8 +153,9 @@ def play():
 def start():
 	drawBoard()
 	print('Welcome To Terminal Tic-Tac-Toe')
-	print('Player 1 will play as X')
-	print('Player 2 will play as O')
+    # TODO: print something actually relevant here
+	# print('Player 1 will play as X')
+	# print('Player 2 will play as O')
 	if input("Press '1' to play and any other key to exit!\n") != '1':
 		exit()
 	play()
