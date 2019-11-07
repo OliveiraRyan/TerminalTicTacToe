@@ -17,6 +17,10 @@ args = parser.parse_args()
 
 sock = socket.socket()
 host = socket.gethostname()
+# sock.bind(('', args.port))
+
+HOST = socket.gethostbyname(socket.gethostname())
+print(HOST)
 sock.bind(('', args.port))
 
 sock.listen(2)

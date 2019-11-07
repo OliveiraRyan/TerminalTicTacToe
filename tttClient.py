@@ -120,9 +120,16 @@ def play():
     #     play()
 
     #can change True to < 9 later -- when implementing restart game feature
+    
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    connection.connect(("dh2026pc08", _port))
+    #TODO make this user input opposed to being hardcoded
+    #connection.connect(("dh2026pc08", _port))
+    # HOST = socket.gethostbyname("ryan-XPS-15-9550",)
+    # connection.connect(("ryan-XPS-15-9550", _port))
+    HOST = socket.gethostbyname(socket.gethostname())
+    connection.connect((HOST, _port))
+    # connection.connect(("70.49.155.33", _port))
 
     #indication from server if this client goes first or second
     msg = connection.recv(_max_msg_size).decode("UTF-8")
