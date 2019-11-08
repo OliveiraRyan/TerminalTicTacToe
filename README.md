@@ -10,7 +10,12 @@ Currently, the local version is finished and the Server-Client applications are 
 
 Let me know if and how you break my code!
 
-**To Be Implemented:**
+## Credits:
+Initial idea originated from Engineer Man's Youtube channel. Particularly this [Project Review video](https://www.youtube.com/watch?v=BcYI-w_-rwg&t=12s)
+
+He also uploaded the code onto [his Github](https://github.com/engineer-man/youtube/tree/master/043)
+
+## To Be Implemented:
 * IP address & Port as args when user launches client app -- **DONE**
 * Make server output pretty -- **DONE**
 * Play again option after game end
