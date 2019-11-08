@@ -17,10 +17,7 @@ args = parser.parse_args()
 
 sock = socket.socket()
 host = socket.gethostname()
-# sock.bind(('', args.port))
 
-HOST = socket.gethostbyname(socket.gethostname())
-print(HOST)
 sock.bind(('', args.port))
 
 sock.listen(2)
@@ -44,8 +41,8 @@ p2Turn = not p1Turn
 #implement logic for distributing player 1 and player 2 turns
 #send the entire moves array back and forth (easiest to deal with and not that much data)
 #print messages on the player's consoles
-#determine win condition here - valid moves can be done but its better client side since they resume their turn
-#everything else should be client I guess
+#determine win condition here - valid moves can be done but its better client side since they resume their turn upon illegal move instantly
+#everything else should be client I believe
 
 def send_message(sock, msg):
     '''Send bytes msg to each socket in the dict sockets and return a list of sockets
@@ -60,10 +57,8 @@ def send_message(sock, msg):
             sent = sock.send(msg[total_sent: total_sent + _max_msg_size])
             total_sent += sent
     except socket.error:
-        print("Error occured, message not sent")
+        print("Error occurred, message not sent")
         return
-    #     to_remove.append(sock)
-    # return to_remove
 
 def send_moves(sock, msg):
     '''Send str msg to the socket sock. A socket.error is raised if the socket 
@@ -88,6 +83,53 @@ def winCondition():
             return True
     return False
 
+def blankRow():
+    for col in range(17):
+        if (col%6==5):
+            print('|', end='')
+        else:
+            print(' ', end='')
+    print()
+
+def inputRow(row):
+    counter = 0
+    for col in range(17):
+        if (col%6==2):
+            print(moves[row][counter], end='')
+            counter += 1
+        elif (col%6==5):
+            print('|', end='')
+        else:
+            print(' ', end='')
+    print()
+
+def lineRow():
+    for col in range(17):
+        if (col%6==5):
+            print('|', end='')
+        else:
+            print('_', end='')
+    print()
+
+def drawBoard():
+    '''Format the gamestate into a pretty TicTacToe board! The helper functions
+    above have simple tasks, which are explained above their respective 
+    function call in this function.'''
+
+    #clear has been removed so server app retains move history
+    # os.system('clear')
+    for row in range(9):
+        if (row%3 == 0 or row == 8):
+            #print blanks for row
+            blankRow()
+        elif (row%3 == 1):
+            #the user has input on this row
+            inputRow(row//3)
+        elif (row%3 == 2):
+            #draw horizontal line
+            lineRow()
+    print()
+
 
 print('\nGame starting...', flush=True)
 
@@ -104,12 +146,9 @@ while turn < 9 and winner == None:
 
     #send message (game state) to BOTH players
 
-    print(p1Turn, flush=True)
-    print(p2Turn, flush=True)
-
     if (p1Turn):
         playerTurn = 1
-        # print("we in bois", flush=True)
+        print("Player 1's turn...", flush=True)
         #wait for p1 move
         send_message(conn1, "Your move!")
         send_message(conn2, "Waiting for opponent...")
@@ -121,7 +160,7 @@ while turn < 9 and winner == None:
         
     elif (p2Turn):
         playerTurn = 2
-        # print("we in bois 2", flush=True)
+        print("Player 2's turn...", flush=True)
         #wait for p2 move
         send_message(conn1, "Waiting for opponent...")
         send_message(conn2, "Your move!")
@@ -131,7 +170,9 @@ while turn < 9 and winner == None:
 
         send_moves(conn1, moves)
 
-    print(moves, flush=True)
+    #Print gamestate
+    drawBoard()
+    # print(moves, flush=True)
     
     
     if (winCondition()):

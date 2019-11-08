@@ -120,7 +120,7 @@ def play():
     if (moveCounter == 9):
         print('It\'s a tie!')
     print('Play Again?')
-    if (input("Press '1' for YES and any other key to EXIT!") == '1'):
+    if (input("Press '1' for YES and any other key to EXIT!\n") == '1'):
         moves = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
         drawBoard()
         play()
@@ -133,7 +133,7 @@ def start():
     print('Welcome To Terminal Tic-Tac-Toe')
     print('Player 1 will play as X')
     print('Player 2 will play as O')
-    if (input("Press '1' to play and any other key to exit!\n") != '1'):
+    if (input("Press '1' to play and any other key to EXIT!\n") != '1'):
         print("Goodbye!")
         exit()
     play()

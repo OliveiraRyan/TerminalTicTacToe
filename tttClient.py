@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import socket
@@ -5,12 +6,19 @@ import select
 import pickle
 import time
 
-_port = 5001
 _max_msg_size = 256
 
 moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
 playerNumber = '0'
 playerLetter = ' '
+
+parser = argparse.ArgumentParser()
+parser.add_argument('IP', type=str, help='The IP address to connect to')
+parser.add_argument('port', type=int, help='The port to connect to')
+args = parser.parse_args()
+
+ip = args.IP
+port = args.port
 
 
 def send_message(sock, msg):
@@ -124,12 +132,16 @@ def play():
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     #TODO make this user input opposed to being hardcoded
+
     #connection.connect(("dh2026pc08", _port))
-    # HOST = socket.gethostbyname("ryan-XPS-15-9550",)
     # connection.connect(("ryan-XPS-15-9550", _port))
-    HOST = socket.gethostbyname(socket.gethostname())
-    connection.connect((HOST, _port))
+
+    # HOST = socket.gethostbyname(socket.gethostname())
+    # connection.connect((HOST, _port))
     # connection.connect(("70.49.155.33", _port))
+    # connection.connect(("localhost", _port))
+
+    connection.connect((ip, port))
 
     #indication from server if this client goes first or second
     msg = connection.recv(_max_msg_size).decode("UTF-8")
