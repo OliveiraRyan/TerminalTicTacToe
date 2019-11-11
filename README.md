@@ -4,7 +4,7 @@ Text-based TicTacToe game that is playable in the terminal.
 
 There are Server-Client applications that can be run to play your opponent online, via TCP sockets!
 
-The arguments are as follow:
+The arguments are as follows:
 * tttServer \[PORT]
 * tttClient \[IP] \[PORT]
   * 'localhost' can be inputted for \[IP] on local connection
