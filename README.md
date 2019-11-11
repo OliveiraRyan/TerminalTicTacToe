@@ -2,11 +2,16 @@
 
 Text-based TicTacToe game that is playable in the terminal.
 
-There are Server-Client applications that can be run to play your opponent through the internet, via TCP sockets!
+There are Server-Client applications that can be run to play your opponent online, via TCP sockets!
 
-There is also a local version, where 2 players can play within the same terminal windows, taking turns inputting their moves each turn.
+The arguments are as follow:
+* tttServer \[PORT]
+* tttClient \[IP] \[PORT]
+  * 'localhost' can be inputted for \[IP] on local connection
 
-Currently, the local version is finished and the Server-Client applications are *functional.* I will be adding more to the latter shortly to make the connection between the Server and Client apps easier, and to make the matches more user friendly.
+There is also a local application, where 2 players can play within the same terminal window, taking turns inputting their moves each turn.
+
+Currently, both the local application and the Server-Client applications are working as intended. I will be adding more to the latter to make the matches more user friendly.
 
 Let me know if and how you break my code!
 

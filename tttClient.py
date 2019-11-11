@@ -80,6 +80,7 @@ def playerTurn():
     global playerNumber, playerLetter
     print("Player {0}\'s Turn,\nYour letter is {1}:\n".format(playerNumber, playerLetter))
 
+    #TODO Turn this into a loop instead
     def playerMove():
         try:
             row, col = int(input('Row :'))-1, int(input('Column :'))-1
@@ -106,40 +107,9 @@ def validMove(inputValue):
         
 def play():
     global moves, playerNumber, playerLetter
-    moveCounter = 0 #for use later, when implementing reset feature
-
-    #most of this is done in server
-
-    # while moveCounter < 9:
-    #     moveCounter += 1
-    #     playerTurn()
-    #     if (winCondition()):
-    #         print('Player %s has won!' % player)
-    #         break
-    #     player = swapPlayer[player]
-        
-
-    # if (moveCounter == 9):
-    #     print('It\'s a tie!')
-    # print('Play Again?')
-    # if (input("Press '1' for YES and any other key to EXIT!")=='1'):
-    #     moves = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
-    #     drawBoard()
-    #     play()
-
-    #can change True to < 9 later -- when implementing restart game feature
     
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    #TODO make this user input opposed to being hardcoded
-
-    #connection.connect(("dh2026pc08", _port))
-    # connection.connect(("ryan-XPS-15-9550", _port))
-
-    # HOST = socket.gethostbyname(socket.gethostname())
-    # connection.connect((HOST, _port))
-    # connection.connect(("70.49.155.33", _port))
-    # connection.connect(("localhost", _port))
 
     connection.connect((ip, port))
 
@@ -166,6 +136,9 @@ def play():
             send_message(connection, moves)
         elif (msg == "Waiting for opponent..."):
             moves = pickle.loads(connection.recv(_max_msg_size))
+        #this else should handle "play again [Y/n]"
+        else:
+            print(msg)
             
 
     print("Connection terminated.")
@@ -174,9 +147,7 @@ def play():
 def start():
 	drawBoard()
 	print('Welcome To Terminal Tic-Tac-Toe')
-    # TODO: print something actually relevant here
-	# print('Player 1 will play as X')
-	# print('Player 2 will play as O')
+
 	if input("Press '1' to play and any other key to exit!\n") != '1':
 		exit()
 	play()

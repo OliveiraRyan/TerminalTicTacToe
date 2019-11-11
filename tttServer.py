@@ -116,7 +116,7 @@ def drawBoard():
     above have simple tasks, which are explained above their respective 
     function call in this function.'''
 
-    #clear has been removed so server app retains move history
+    #'clear' has been removed so server app retains move history
     # os.system('clear')
     for row in range(9):
         if (row%3 == 0 or row == 8):
@@ -130,6 +130,13 @@ def drawBoard():
             lineRow()
     print()
 
+#TODO Add play again function
+# def playAgain(winner):
+    # send_message(conn1, 'Player 1 has won!')
+    # send_message(conn2, winner)
+
+    # return
+
 
 print('\nGame starting...', flush=True)
 
@@ -141,11 +148,14 @@ time.sleep(1)
 send_message(conn1, '1')
 send_message(conn2, '2')
 time.sleep(1)
+
+#start the game!
 while turn < 9 and winner == None:
     turn += 1
 
-    #send message (game state) to BOTH players
 
+
+    #send message (game state) to BOTH players
     if (p1Turn):
         playerTurn = 1
         print("Player 1's turn...", flush=True)
@@ -174,16 +184,20 @@ while turn < 9 and winner == None:
     drawBoard()
     # print(moves, flush=True)
     
-    
-    if (winCondition()):
-        winner = 'Player %d has won!' % playerTurn
-        # send_message(conn1, winner)
-        # send_message(conn2, winner)
-        print(winner, flush=True)
-        #server should terminate at this point -- can do reset game feature later
-        break
-
     #swap turns
     p1Turn = not p1Turn
     p2Turn = not p2Turn
+    
+    #check if game has been won, and ask players if they would like to play again
+    if (winCondition()):
+        time.sleep(2)
+        winner = 'Player %d has won!' % playerTurn
+        print(winner, flush=True)
+        
+        #server should currently terminate at this point -- can do reset game feature later
+        # playAgain(winner)
+
+        break
+
+    
 
