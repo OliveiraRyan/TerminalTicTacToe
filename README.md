@@ -9,7 +9,7 @@ The arguments are as follows:
 * tttClient \[IP] \[PORT]
   * 'localhost' can be inputted for \[IP] on local connection
 
-There is also a local application, where 2 players can play within the same terminal window, taking turns inputting their moves each turn.
+There is also a local application, tttLocal, where 2 players can play within the same terminal window, taking turns inputting their moves each turn.
 
 Currently, both the local application and the Server-Client applications are working as intended. I will be adding more to the latter to make the matches more user friendly.
 
